@@ -45,4 +45,22 @@ typedef enum : U8 {
     COMBINED_OCCUPANCY  = 0x0E,
 } OccupancyKind;
 
+/**
+ * @brief Defines bit flags describing the castling rights.
+ *
+ * ```
+ * Bit:   7 6 5 4 3 2 1 0
+ *        ---------------
+ * Value: - - - - q Q k K
+ * ```
+ *
+ * @note Bits 4, 5, 6, and 7 are reserved and should be zero.
+ */
+typedef enum : U8 {
+    CAN_WHITE_CASTLE_SHORT  = 1 << 0, // Bit `K`
+    CAN_BLACK_CASTLE_SHORT  = 1 << 1, // Bit `k`
+    CAN_WHITE_CASTLE_LONG   = 1 << 2, // Bit `Q`
+    CAN_BLACK_CASTLE_LONG   = 1 << 3, // Bit `q`
+} CastelingRight;
+
 #endif
