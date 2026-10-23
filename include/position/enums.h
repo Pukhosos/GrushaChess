@@ -29,4 +29,20 @@ typedef enum : U8 {
     EMPTY_SQUARE    = 0x0F, // Not a bitboard
 } SquareKind;
 
+/**
+ * @brief Identifies an aggregate occupancy bitboard index.
+ *
+ * Values correspond directly to indices in `Position::bitboards`, following the
+ * 12 individual piece bitboards.
+ *
+ * `WHITE_OCCUPANCY` and `BLACK_OCCUPANCY` represent all squares occupied by the
+ * respective color, `COMBINED_OCCUPANCY` represents all occupied squares
+ * regardless of color.
+ */
+typedef enum : U8 {
+    WHITE_OCCUPANCY     = 0x0C,
+    BLACK_OCCUPANCY     = 0x0D,
+    COMBINED_OCCUPANCY  = 0x0E,
+} OccupancyKind;
+
 #endif
