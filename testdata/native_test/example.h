@@ -1,0 +1,6 @@
+#ifndef TESTDATA_NATIVE_TEST_EXAMPLE_H
+#define TESTDATA_NATIVE_TEST_EXAMPLE_H
+
+int example();
+
+#endif
