@@ -50,6 +50,23 @@ typedef struct {
     U16 ply_count;
 
     /**
+     * @brief Halfmoves since the last pawn move or capture.
+     *
+     * Used to enforce the 50-move and 75-move rules:
+     *
+     *   - 50-move rule: After 100 halfmoves (50 moves by each player) without a
+     * pawn move or capture, either player may claim a draw.
+     *
+     *   - 75-move rule: After 150 halfmoves (75 moves by each player) without a
+     * pawn move or capture, the game is automatically drawn, unless the final
+     * move delivers checkmate.
+     *
+     * @note Resets to zero after any pawn move or capture, otherwise
+     * incremented after every move by either player.
+     * */
+    U16 ply_clock;
+
+    /**
      * @brief Bitmask of CastelingRight values encoding the castling rights.
      *
      * ```
