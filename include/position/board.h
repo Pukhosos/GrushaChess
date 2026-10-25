@@ -27,6 +27,19 @@ enum {
     NO_EN_PASSANT = 0xFF,
 };
 
+enum {
+    /**
+     * @brief Maximum buffer size required to store a FEN string.
+     *
+     * Includes sufficient space for all six FEN fields and the terminating
+     * null character.
+     *
+     * @note Assumes a valid chess position with a ply count not exceeding
+     * `MAX_PLY_COUNT = 17697`.
+     */
+    FEN_BUFFER_SIZE = 96,
+};
+
 /**
  * @brief Represents a chess position.
  *
@@ -259,5 +272,33 @@ typedef enum {
  * @note On failure, `board_position` remain unchanged.
  */
 FenParsingResult from_fen(BoardPosition* board_position, const char* fen);
+
+/**
+ * @brief Convert a chess position into a FEN string.
+ *
+ * Serializes the current board state into Forsyth-Edwards Notation (FEN),
+ * including all six fields:
+ *
+ *   - Piece placement.
+ *
+ *   - Side to move.
+ *
+ *   - Castling rights.
+ *
+ *   - En passant target square.
+ *
+ *   - Halfmove clock.
+ *
+ *   - Fullmove number.
+ *
+ * @param board_position `BoardPosition` to convert into FEN.
+ * @param fen Destination buffer to store the null-terminated FEN string. Must
+ * have a capacity of at least `FEN_BUFFER_SIZE = 96` bytes.
+ *
+ * @return `true` if the position was successfully converted, `false` otherwise.
+ *
+ * @note On failure, `fen` remains unchanged.
+ */
+bool to_fen(const BoardPosition* board_position, char* fen);
 
 #endif
