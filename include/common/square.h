@@ -175,4 +175,101 @@ typedef enum : U64 {
     H8_MASK = 1ULL << H8,
 } SquareMask;
 
+/**
+ * @brief Convert a rank and file to a square index using LERF mapping.
+ *
+ * @param file File character ('a'-'h').
+ * @param rank Rank number (1-8).
+ * @return Square corresponding to the given rank and file.
+ *
+ * @note `file` must be in `'a'-'h'`, `rank` must be in `1-8`. No bounds
+ * checking is performed.
+ */
+static inline Square make_square(char file, int rank) {
+    return (Square)(((rank - 1) << 3) + (file - 'a'));
+}
+
+/**
+ * @brief Convert a `SquareMask` to a square index using LERF mapping.
+ *
+ * @param square_mask Bitboard mask containing exactly one set bit.
+ * @return Square corresponding to the set bit.
+ *
+ * @note No bit count checking is performed.
+ */
+static inline Square make_square_from_square_mask(SquareMask square_mask) {
+    return (Square)__builtin_ctzll(square_mask);
+}
+
+/**
+ * @brief Create a bitboard with only the specified square bit set.
+ *
+ * @param file File character ('a'-'h').
+ * @param rank Rank number (1-8).
+ * @return U64 bitboard with the bit corresponding to the square set.
+ *
+ * @note `file` must be in `'a'-'h'`, `rank` must be in `1-8`. No bounds
+ * checking is performed.
+ *
+ * For example:
+ *
+ * ```c
+ * U64 bitboard = make_square_mask('c', 7);
+ * ```
+ *
+ * produces this bitboard
+ *
+ * ```
+ *   +------------------------+
+ * 8 | .  .  .  .  .  .  .  . |
+ * 7 | .  .  *  .  .  .  .  . |
+ * 6 | .  .  .  .  .  .  .  . |
+ * 5 | .  .  .  .  .  .  .  . |
+ * 4 | .  .  .  .  .  .  .  . |
+ * 3 | .  .  .  .  .  .  .  . |
+ * 2 | .  .  .  .  .  .  .  . |
+ * 1 | .  .  .  .  .  .  .  . |
+ *   +------------------------+
+ *     a  b  c  d  e  f  g  h
+ * ```
+ */
+static inline U64 make_square_mask(char file, int rank) {
+    return 1ULL << make_square(file, rank);
+}
+
+/**
+ * @brief Create a bitboard with only the specified square bit set from square
+ * index.
+ *
+ * @param square Square index (A1-H8).
+ * @return U64 bitboard with the bit corresponding to the square set.
+ *
+ * @note `square` must be in `0-63`. No bounds checking is performed.
+ *
+ * For example:
+ *
+ * ```c
+ * U64 bitboard = make_square_mask_from_square(C7);
+ * ```
+ *
+ * produces this bitboard
+ *
+ * ```
+ *   +------------------------+
+ * 8 | .  .  .  .  .  .  .  . |
+ * 7 | .  .  *  .  .  .  .  . |
+ * 6 | .  .  .  .  .  .  .  . |
+ * 5 | .  .  .  .  .  .  .  . |
+ * 4 | .  .  .  .  .  .  .  . |
+ * 3 | .  .  .  .  .  .  .  . |
+ * 2 | .  .  .  .  .  .  .  . |
+ * 1 | .  .  .  .  .  .  .  . |
+ *   +------------------------+
+ *     a  b  c  d  e  f  g  h
+ * ```
+ */
+static inline U64 make_square_mask_from_square(Square square) {
+    return 1ULL << square;
+}
+
 #endif
