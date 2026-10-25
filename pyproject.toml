@@ -3,7 +3,10 @@ name = "GrushaChess-pysupport"
 version = "0.0.0"
 description = "Python scripts for GrushaChess engine."
 authors = [{ name = "Emelianov Artem", email = "penguin5726@proton.me" }]
-dependencies = []
+dependencies = [
+    "python-chess",
+    "zstandard",
+]
 requires-python = "==3.15"
 readme = "README.md"
 license = "GPL-3.0"
@@ -130,7 +133,12 @@ addopts = [
     "--doctest-modules",
     "--doctest-glob=*.md",
 ]
-markers = []
+filterwarnings = [
+    "ignore:'asyncio.DefaultEventLoopPolicy' is deprecated:DeprecationWarning"
+]
+markers = [
+    "infinite: test does not finish in a reasonable time"
+]
 pythonpath = ["scripts"]
 testpaths = ["."]
 norecursedirs = [

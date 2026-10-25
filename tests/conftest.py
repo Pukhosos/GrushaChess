@@ -2,9 +2,27 @@ from pathlib import Path
 from subprocess import CompletedProcess, run
 
 from filelock import FileLock
-from pytest import TempPathFactory, fixture
+from pytest import Config, Parser, TempPathFactory, fixture
 
 from tests.shared import NATIVE_TESTS, ROOT, TESTS, CTestFile
+
+
+def pytest_addoption(parser: Parser) -> None:
+    """Add `--limit-infinite-tests` option."""
+
+    parser.addoption(
+        '--limit-infinite-tests',
+        action='store_true',
+        default=False,
+        help='Limit number of iterations for infinite tests',
+    )
+
+
+@fixture
+def limit_infinite_tests(pytestconfig: Config) -> bool:
+    """Whether `--limit-infinite-tests` flag is set."""
+
+    return bool(pytestconfig.getoption('--limit-infinite-tests'))
 
 
 @fixture(scope='session')
@@ -59,7 +77,7 @@ def build_native_tests(
     done_file: Path = shared_temp_directory / 'grusha-chess-test-setup.done'
     with FileLock(lock_file):
         if not done_file.exists():
-            for c_test in CTestFile.collect_c_tests(NATIVE_TESTS):
+            for c_test in CTestFile.collect_c_tests(TESTS):
                 build_result: CompletedProcess[str] = run(  # noqa: S603
                     c_test.compose_compilation_command(
                         native_builds_dir=native_builds_dir,

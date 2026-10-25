@@ -6,7 +6,7 @@ from string import Template
 from textwrap import dedent
 from typing import Final, Literal
 
-from tests.shared.constants import NATIVE_TESTS, ROOT
+from tests.shared.constants import ROOT, TESTS
 
 C_DEPENDENCY_DECLARATION_PREFIX: Final[str] = '// depends-on: '
 C_TEST_PATTERN: Final[Pattern[str]] = compile(
@@ -37,7 +37,7 @@ class CTestFile:
     def c_build_name(self) -> str:
         """Name of the executable derived from the test file path."""
 
-        build_name: str = str(self.path.relative_to(NATIVE_TESTS)).replace('/', '_')
+        build_name: str = str(self.path.relative_to(TESTS)).replace('/', '_')
         return build_name.removesuffix('.c')
 
     @property
@@ -88,6 +88,13 @@ class CTestFile:
             for native_test_path in directory.rglob('test_*.c')
             if native_test_path.is_file()
         ]
+
+    @staticmethod
+    def get_executable_name_by_file(dunder_file: str) -> str:
+        """Get executable name corresponding to `__file__`."""
+
+        relative_path: Path = Path(dunder_file).relative_to(TESTS)
+        return str(relative_path).replace('/', '_').removesuffix('.py')
 
     def compose_compilation_command(
         self,

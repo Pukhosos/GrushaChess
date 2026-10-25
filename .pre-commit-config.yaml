@@ -31,3 +31,10 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: infinite-tests
+        name: infinite-tests
+        entry: pytest tests/infinite -n 8 --limit-infinite-tests
+        language: system
+        pass_filenames: false
+        always_run: true

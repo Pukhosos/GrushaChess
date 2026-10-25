@@ -142,4 +142,122 @@ typedef struct {
     U8 en_passant;
 } BoardPosition;
 
+/** @brief FEN parsing result. */
+typedef enum {
+    /**
+     * @brief FEN string parsed successfully.
+     *
+     * All six FEN fields are valid, and the resulting position has been
+     * successfully stored in the destination `BoardPosition`.
+     */
+    FEN_OK = 0x00,
+
+    /**
+     * @brief Invalid FEN string structure.
+     *
+     * The FEN string does not conform to the expected overall format.
+     */
+    FEN_INVALID_FORMAT = 0x01,
+
+    /**
+     * @brief Invalid piece placement field.
+     *
+     * The first FEN field does not describe a valid 8x8 chessboard.
+     */
+    FEN_INVALID_PIECE_PLACEMENT = 0x02,
+
+    /**
+     * @brief Invalid side-to-move field.
+     *
+     * The second FEN field must contain exactly one character:
+     *
+     *   - 'w' for White to move.
+     *
+     *   - 'b' for Black to move.
+     *
+     * Any other value is invalid.
+     */
+    FEN_INVALID_SIDE_TO_MOVE = 0x03,
+
+    /**
+     * @brief Invalid castling rights field.
+     *
+     * The third FEN field must contain either '-' (no castling rights) or a
+     * valid combination of the following characters:
+     *
+     *   - 'K' for White kingside castling.
+     *
+     *   - 'Q' for White queenside castling.
+     *
+     *   - 'k' for Black kingside castling.
+     *
+     *   - 'q' for Black queenside castling.
+     *
+     * @note This result indicates invalid field syntax.
+     */
+    FEN_INVALID_CASTLING_RIGHTS = 0x04,
+
+    /**
+     * @brief Invalid en passant target square field.
+     *
+     * The fourth FEN field must contain either '-' (no en passant target) or a
+     * valid target square in algebraic notation.
+     *
+     * The target square must:
+     *
+     *   - Have a file between 'a' and 'h'.
+     *
+     *   - Have rank '3' or '6'.
+     *
+     *   - Be on rank '3' when Black is to move.
+     *
+     *   - Be on rank '6' when White is to move.
+     *
+     * @note A valid en passant target does not necessarily imply that an en
+     * passant capture is currently legal.
+     */
+    FEN_INVALID_EN_PASSANT = 0x05,
+
+    /**
+     * @brief Invalid halfmove clock field.
+     *
+     * The fifth FEN field must contain a non-negative decimal integer
+     * representing the number of halfmoves since the last pawn move or capture.
+     */
+    FEN_INVALID_HALFMOVE_CLOCK = 0x06,
+
+    /**
+     * @brief Invalid fullmove number field.
+     *
+     * The sixth FEN field must contain a positive decimal integer representing
+     * the current fullmove number.
+     *
+     * The fullmove number starts at 1 and increments after each move by Black.
+     */
+    FEN_INVALID_FULLMOVE_NUMBER = 0x07,
+
+    /** @brief `board_position` is NULL. */
+    FEN_NULL_BOARD_POSITION = 0x08,
+
+    /**
+     * @brief `fen` is NULL.
+     *
+     * The source FEN string pointer is NULL. No parsing is performed, and the
+     * destination position remains unchanged.
+     */
+    FEN_NULL_FEN = 0x09,
+} FenParsingResult;
+
+/**
+ * @brief Parse a FEN string into a chess position.
+ *
+ * @param board_position `BoardPosition` to parse FEN into.
+ * @param fen Null-terminated FEN string to parse.
+ *
+ * @return `FenParsingResult`.
+ *
+ * @note On failure, `board_position` remain unchanged.
+ */
+FenParsingResult from_fen(BoardPosition* board_position, const char* fen);
+
 #endif
